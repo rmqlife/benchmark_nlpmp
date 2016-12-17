@@ -1,0 +1,3 @@
+static_obstacles:
+  - {type: "mesh", file: "package://itomp_exec/env/table_collision_rotated.dae", position: [0.7, 0.0, 0.0]}
+  - {type: "sphere", position: [0.00,  0.70, 0.35], radius: 0.35}

@@ -1,0 +1,27 @@
+<launch>
+
+  <!-- 3 options: use_real_robot, use_gazebo, use_rviz -->
+  <!-- TODO -->
+  <arg name="use_real_robot" default="false"/>
+  <arg name="use_gazebo"     if="$(arg use_real_robot)" value="false"/>
+  <arg name="use_gazebo" unless="$(arg use_real_robot)" default="false"/>
+  <arg name="use_rviz"     if="$(arg use_real_robot)" value="true"/>
+  <arg name="use_rviz" unless="$(arg use_real_robot)" value="true"/>
+
+  <arg name="allow_trajectory_execution" default="true"/>
+  <arg name="allow_active_sensing" default="true"/>
+
+  <!-- Broadcast static tf from map to odom. -->
+  <node name="odom_tf_broadcaster" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 map odom 100" />
+
+  <!-- Benchmark parameters -->
+  <rosparam ns="benchmark_nlpmp" command="load" file="$(find benchmark_nlpmp)/config/benchmark_laptop.yaml"/>
+
+  <!-- Run Rviz and load the default config to see the state of the move_group node -->
+  <node if="$(arg use_rviz)" name="$(anon rviz)" pkg="rviz" type="rviz" respawn="false" args="-d $(find benchmark_nlpmp)/launch/benchmark_nlpmp.rviz">
+    <!-- If fetch robot is loaded
+    <rosparam command="load" file="$(find fetch_moveit_config)/config/kinematics.yaml"/>
+    -->
+  </node>
+
+</launch>

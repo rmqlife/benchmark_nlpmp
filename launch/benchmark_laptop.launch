@@ -15,10 +15,10 @@
   <node name="odom_tf_broadcaster" pkg="tf" type="static_transform_publisher" args="0 0 0 0 0 0 map odom 100" />
 
   <!-- Benchmark parameters -->
-  <rosparam ns="benchmark_nlpmp" command="load" file="$(find benchmark_nlpmp)/config/benchmark_laptop.yaml"/>
+  <rosparam ns="benchmark_laptop" command="load" file="$(find benchmark_nlpmp)/config/benchmark_laptop.yaml"/>
 
   <!-- Run Rviz and load the default config to see the state of the move_group node -->
-  <node if="$(arg use_rviz)" name="$(anon rviz)" pkg="rviz" type="rviz" respawn="false" args="-d $(find benchmark_nlpmp)/launch/benchmark_nlpmp.rviz">
+  <node if="$(arg use_rviz)" name="$(anon rviz)" pkg="rviz" type="rviz" respawn="false" args="-d $(find benchmark_nlpmp)/launch/benchmark_laptop.rviz">
     <!-- If fetch robot is loaded
     <rosparam command="load" file="$(find fetch_moveit_config)/config/kinematics.yaml"/>
     -->

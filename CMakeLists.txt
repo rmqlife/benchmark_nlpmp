@@ -19,6 +19,8 @@ add_custom_target(dummy_${PROJECT_NAME} SOURCES ${extra_files})
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   resource_retriever
+  cmake_modules
+  eigen_conversions
 )
 
 ## System dependencies are found with CMake's conventions
@@ -126,7 +128,7 @@ endif()
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES benchmark_nlpmp
-  CATKIN_DEPENDS roscpp resource_retriever
+  CATKIN_DEPENDS roscpp resource_retriever cmake_modules eigen_conversions
   DEPENDS system_lib
 )
 
@@ -139,6 +141,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${Eigen_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library

@@ -7,6 +7,7 @@
 
 #include <eigen_conversions/eigen_msg.h>
 
+#include<ros/console.h>
 
 int main(int argc, char** argv)
 {
@@ -22,7 +23,7 @@ int main(int argc, char** argv)
     // Check out http://xmlrpcpp.sourceforge.net/doc/classXmlRpc_1_1XmlRpcValue.html for how to use XmlRpc parser.
     // Check out launch/benchmark_laptop.launch for loading .yaml files under /benchmark_laptop namespace.
     XmlRpc::XmlRpcValue camera;
-    nh.getParam("camera", camera);
+    nh.getParam("camera/position", camera);
 
     XmlRpc::XmlRpcValue camera_position_xml = camera["position"];
     Eigen::Vector3d camera_position;
@@ -35,7 +36,9 @@ int main(int argc, char** argv)
     camera_orientation.x() = camera_orientation_xml[1];
     camera_orientation.y() = camera_orientation_xml[2];
     camera_orientation.z() = camera_orientation_xml[3];
-
+    
+    std::cout << "camera" << camera << std::endl;
+    std::cout << "camrea position xml" << camera["position"] << std::endl;
     std::cout << "camera position: " << camera_position.transpose() << std::endl;
     std::cout << "camera orientation: " << camera_orientation.coeffs().transpose() << std::endl; // it outputs x, y, z, w in order
 
@@ -53,12 +56,12 @@ int main(int argc, char** argv)
     for (int i=0; i<3; i++)
         table_size(i) = table_size_xml[i];
 
-    std::cout << "table position: " << table_position.transpose() << std::endl;
+    std::cout << "table position: " << table_size_xml << std::endl;
     std::cout << "table size: " << table_size.transpose() << std::endl;
 
 
     // visualization publisher setup
-    ros::Publisher visualization_marker_array_publisher = nh.advertise<visualization_msgs::MarkerArray>("obstacles", 1);
+    ros::Publisher marker_pub = nh.advertise<visualization_msgs::MarkerArray>("obstacles", 1);
 
     // Setting up publishers takes a little bit of time
     // Wait for 1 sec for publisher to be ready
@@ -76,28 +79,31 @@ int main(int argc, char** argv)
 
     marker.action = visualization_msgs::Marker::ADD;
     marker.type = visualization_msgs::Marker::CUBE;
+    marker.lifetime = ros::Duration();
 
     marker.color.r = 139. / 255.;
     marker.color.g = 69. / 255.;
     marker.color.b = 19. / 255.;
     marker.color.a = 1.;
-
+    
+    marker.scale.x = 1.0;
+    marker.scale.y = 1.0;
+    marker.scale.z = 1.0;
+    
+    
     tf::pointEigenToMsg(table_position, marker.pose.position);
     tf::quaternionEigenToMsg(Eigen::Quaterniond::Identity(), marker.pose.orientation);
-
     tf::vectorEigenToMsg(table_size * 2., marker.scale);
 
     marker_array.markers.push_back(marker);
 
-    visualization_marker_array_publisher.publish(marker_array);
-
-
     // Run main loop
-    ros::Rate rate(2);
-
+    ros::Rate rate(1);
+    ROS_INFO("start");
+    //ROS_INFO("Hello %d", table_size_xml[0]);
+    ROS_INFO_STREAM( "table size haha: " << table_size_xml[0] << table_size_xml[1] << table_size_xml[2] );
     while (ros::ok())
     {
-        ROS_INFO("Main loop");
 
         // TODO: communicating with a NLP module vis ros msgs
 
@@ -105,9 +111,18 @@ int main(int argc, char** argv)
 
         // TODO: if using gazebo or real robot, send the trajectory to control the robot
 
+        // Publish the marker
+        while (marker_pub.getNumSubscribers() < 1)
+        {
+          if (!ros::ok())
+          {
+            return 0;
+          }
+          ROS_WARN_ONCE("Please create a subscriber to the marker");
+          sleep(1);
+        }
+        marker_pub.publish(marker_array);
         rate.sleep();
     }
-
-
     return 0;
 }

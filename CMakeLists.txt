@@ -41,8 +41,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
 
-
-
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES benchmark_nlpmp
@@ -50,13 +48,10 @@ catkin_package(
 #  DEPENDS system_lib
 )
 
-
 include_directories(
   ${catkin_INCLUDE_DIRS}
   ${Eigen_INCLUDE_DIRS}
 )
-
-
 
 ## Declare a C++ executable
 add_executable(benchmark_laptop src/benchmark_laptop.cpp)

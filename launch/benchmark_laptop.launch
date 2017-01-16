@@ -23,5 +23,5 @@
     <rosparam command="load" file="$(find fetch_moveit_config)/config/kinematics.yaml"/>
     -->
   </node>
-
+  <node pkg="benchmark_nlpmp" name="laptop" type="benchmark_laptop" output="screen"/>
 </launch>
